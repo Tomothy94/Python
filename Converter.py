@@ -3,7 +3,7 @@ import os
 import sys
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QWidget
-from PyQt5.QtWidgets import QTextEdit, QPushButton, QVBoxLayout, QHBoxLayout, QAction, qApp, QLabel
+from PyQt5.QtWidgets import QTextEdit, QPushButton, QVBoxLayout, QHBoxLayout, QAction, qApp, QLabel, QComboBox
 
 
 
@@ -13,6 +13,10 @@ class Notepad(QWidget):
 		super().__init__()
 		self.opn_btn = QPushButton('Open')
 		self.con_btn = QPushButton('Convert')
+		self.con_comb = QComboBox()
+		self.con_comb.addItem('Cisco to Brocade')
+		self.con_comb.addItem('Brocade to Cisco')		
+		
 		self.filepath_lbl = QLabel('Select a file...')
 		self.text = ""
 
@@ -25,6 +29,7 @@ class Notepad(QWidget):
 
 		h_filepath.addWidget(self.opn_btn)
 		h_filepath.addWidget(self.filepath_lbl)
+		h_convert.addWidget(self.con_comb)
 		h_convert.addWidget(self.con_btn)
 
 		v_layout.addLayout(h_filepath)
@@ -59,11 +64,18 @@ class Notepad(QWidget):
 				inputText = inputText.replace(i, j)	
 			return inputText	
 			
-		dic = {'Interface':'Port', 'No Shutdown':'Deploy', 'Switchport Access Vlan':'Vlan', 'interface':'port', 'no shutdown':'deploy', 'switchport access vlan':'vlan'}  
+		ciscoDictionary = {'Interface':'Port', 'No Shutdown':'Deploy', 'Switchport Access Vlan':'Vlan', 'interface':'port', 'no shutdown':'deploy', 'switchport access vlan':'vlan'}  
+		brocadeDictionary = {'Port':'Interface', 'Deploy':'No Shutdown', 'Vlan':'Switchport Access Vlan',  'deploy':'no shutdown', 'vlan':'switchport access vlan'}
+		
 		stringToMatch = "Interface"
 		
-		self.text = replace_all(self.text, dic)
+		if(self.con_comb.currentText() == 'Cisco to Brocade'):
+			self.text = replace_all(self.text, ciscoDictionary)
+		elif(self.con_comb.currentText() == 'Brocade to Cisco'):
+			self.text = replace_all(self.text, brocadeDictionary)
+			
 		self.saveas_text()
+		sys.exit()
 		
 class Writer(QMainWindow):
 	def __init__(self):
