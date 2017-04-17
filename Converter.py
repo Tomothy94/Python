@@ -51,11 +51,13 @@ class Notepad(QWidget):
 
 	def open_text(self):
 		filename = QFileDialog.getOpenFileName(self, 'Open File', os.getenv('HOME'))
-		self.filepath_lbl.setText(filename[0])
 		
-		with open(filename[0], 'r') as f:
-			file_text = f.read()
-			self.text = file_text	
+		if(filename[0] != ''):
+			self.filepath_lbl.setText(filename[0])
+		
+			with open(filename[0], 'r') as f:
+				file_text = f.read()
+				self.text = file_text	
 					
 	def convert_text(self, dic):
 		
