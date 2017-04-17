@@ -3,7 +3,7 @@ import os
 import sys
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QWidget
-from PyQt5.QtWidgets import QTextEdit, QPushButton, QVBoxLayout, QHBoxLayout, QAction, qApp
+from PyQt5.QtWidgets import QTextEdit, QPushButton, QVBoxLayout, QHBoxLayout, QAction, qApp, QLabel
 
 
 
@@ -11,40 +11,32 @@ class Notepad(QWidget):
 
 	def __init__(self):
 		super().__init__()
-		self.savas_btn = QPushButton('Save As')
-		self.sav_btn = QPushButton('Save')
 		self.opn_btn = QPushButton('Open')
 		self.con_btn = QPushButton('Convert')
+		self.filepath_lbl = QLabel('Select a file...')
 		self.text = ""
 
 		self.init_ui()
 
 	def init_ui(self):
 		v_layout = QVBoxLayout()
-		h_layout = QHBoxLayout()
+		h_filepath = QHBoxLayout()
+		h_convert = QHBoxLayout()
 
-		h_layout.addWidget(self.sav_btn)
-		h_layout.addWidget(self.opn_btn)
-		h_layout.addWidget(self.con_btn)
-		h_layout.addWidget(self.savas_btn)
+		h_filepath.addWidget(self.opn_btn)
+		h_filepath.addWidget(self.filepath_lbl)
+		h_convert.addWidget(self.con_btn)
 
-		v_layout.addLayout(h_layout)
+		v_layout.addLayout(h_filepath)
+		v_layout.addLayout(h_convert)
 
-		self.sav_btn.clicked.connect(self.save_text)
 		self.opn_btn.clicked.connect(self.open_text)
 		self.con_btn.clicked.connect(self.convert_text)
-		self.savas_btn.clicked.connect(self.saveas_text)
 
 		self.setLayout(v_layout)
 		self.setWindowTitle('PyQt5 TextEdit')
 
 		self.show()
-
-	def save_text(self):
-		filename = QFileDialog.getSaveFileName(self, 'Save File', os.getenv('HOME'))
-		with open(filename[0], 'w') as f:
-			my_text = self.text.toPlainText()
-			f.write(my_text)
 			
 	def saveas_text(self):
 		filename = QFileDialog.getSaveFileName(self, 'Save as File', os.getenv('HOME'))
@@ -54,6 +46,8 @@ class Notepad(QWidget):
 
 	def open_text(self):
 		filename = QFileDialog.getOpenFileName(self, 'Open File', os.getenv('HOME'))
+		self.filepath_lbl.setText(filename[0])
+		
 		with open(filename[0], 'r') as f:
 			file_text = f.read()
 			self.text = file_text	
@@ -68,23 +62,8 @@ class Notepad(QWidget):
 		dic = {'Interface':'Port', 'No Shutdown':'Deploy', 'Switchport Access Vlan':'Vlan', 'interface':'port', 'no shutdown':'deploy', 'switchport access vlan':'vlan'}  
 		stringToMatch = "Interface"
 		
-		print ("before " + self.text)	
 		self.text = replace_all(self.text, dic)
-		print ("after " + self.text)
-		#	if stringToMatch in line:
-		#		print ("from")
-		#		print (line)
-		#		line.replace(stringToMatch, stringToReplace)
-		#		line = line.replace(line, dic)
-		#		lines = [lines.replace('[Interface]', '<int />') for line in lines]
-		#		print (line)
-			#	lines = line.convert_text(lines, dic)
-			#	lines = convert_text(line, dic)
-		#	else:
-		#		print("This shit is lit")	
-		
-						
-						
+		self.saveas_text()
 		
 class Writer(QMainWindow):
 	def __init__(self):
